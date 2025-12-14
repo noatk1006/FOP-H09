@@ -24,10 +24,6 @@ submission {
     requireTests = false
 }
 
-dependencies {
-    implementation(libs.fopbot)
-}
-
 tasks {
     withType<GraderRunTask> {
         doFirst {
