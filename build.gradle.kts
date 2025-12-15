@@ -8,6 +8,10 @@ exercise {
     assignmentId.set("h09")
 }
 
+application {
+    applicationDefaultJvmArgs += "-ea"
+}
+
 submission {
     // ACHTUNG!
     // Setzen Sie im folgenden Bereich Ihre TU-ID (NICHT Ihre Matrikelnummer!), Ihren Nachnamen und Ihren Vornamen
