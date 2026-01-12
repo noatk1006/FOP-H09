@@ -59,8 +59,17 @@ public class Packet {
         int sequenceNumber,
         PacketType type,
         String data) {
-        //TODO Implement H9.1.1
-        org.tudalgo.algoutils.student.Student.crash(); // TODO: H9.1.1 - remove if implemented
+        //TODO Implement H9.1.
+        if (type == PacketType.DATA) {
+            assert data != null : "data must not be null";
+            assert data.length() <= 8 : "data must not be longer than 8 zeichnen";
+        }
+        else {
+            assert data == null :"data must be null for non-data types";
+        }
+        int checksum = calculateChecksum(sequenceNumber,data);
+        this.header = new Header(sourcePort, destinationPort, sequenceNumber, checksum, type);
+        this.data = data;
     }
 
     /**
@@ -108,8 +117,12 @@ public class Packet {
      * @param type the expected packet type
      */
     @StudentImplementationRequired("H9.3")
-    public void expectType(PacketType type) {
-        org.tudalgo.algoutils.student.Student.crash(); // TODO: H9.3 - remove if implemented
+    public void expectType(PacketType type) throws PacketTypeException {
+        PacketType packetType = this.header.type();
+        if(packetType != type){
+            throw new PacketTypeException(type,packetType);
+        }
+
     }
 
     /**
@@ -118,9 +131,13 @@ public class Packet {
      *
      * @param seq the expected packet sequence number
      */
-    @StudentImplementationRequired("H3.3")
-    public void expectSequenceNumber(int seq) {
-        org.tudalgo.algoutils.student.Student.crash(); // TODO: H9.3 - remove if implemented
+    @StudentImplementationRequired("H9.3")
+    public void expectSequenceNumber(int seq) throws PacketSequenceException {
+        int sequenceNumber = this.header.sequenceNumber();
+        if(seq != sequenceNumber){
+            throw new PacketSequenceException(seq,sequenceNumber);
+        }
+
     }
 
     /**
@@ -128,8 +145,13 @@ public class Packet {
      * Compares the checksum in the header with a calculated checksum based on sequence number and data.
      */
     @StudentImplementationRequired("H9.3")
-    public void validateChecksum() {
-        org.tudalgo.algoutils.student.Student.crash(); // TODO: H9.3 - remove if implemented
+    public void validateChecksum()  throws PacketChecksumException {
+        int checksum = calculateChecksum(this.header.sequenceNumber(),this.data);
+        int actualChecksum = this.header.checksum();
+        if(checksum != actualChecksum){
+            throw new PacketChecksumException(checksum,actualChecksum);
+        }
+
     }
 
     /**

@@ -28,7 +28,33 @@ public class Requests {
      */
     @StudentImplementationRequired("H9.5")
     public static String fetch(int from, String request) {
-        return org.tudalgo.algoutils.student.Student.crash(); // TODO: H9.5 - remove if implemented
+        TCPClient client = null;
+        try {
+            client = new TCPClient(from);
+            client.connect();
+            client.send(request);
+            String reply = client.receive();
+            client.close();
+            return reply;
+        } catch (NoFreePortException e) {
+            printNoFreePort();
+            return null;
+        } catch (TCPException e) {
+            printTCPExc(e);
+            return null;
+        } catch (PacketException e) {
+            printPacketExc(e);
+            return null;
+        } catch (InternetException e) {
+            printInternetExc(e);
+            return null;
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (Exception ignored) {}
+            }
+        }
     }
 
     @DoNotTouch

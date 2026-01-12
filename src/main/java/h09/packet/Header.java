@@ -30,7 +30,9 @@ public record Header(int sourcePort,
      */
     public Header {
         // TODO Implement H9.1.2
-        org.tudalgo.algoutils.student.Student.crash(); // TODO: H9.1.2 - remove if implemented
+        assert sourcePort >=0 && sourcePort < InternetPool.MAX_PORT: "sourcePort ist nicht im gültigen Bereich ";
+        assert destinationPort >=0 && destinationPort < InternetPool.MAX_PORT: "destinationPort ist nicht im gültigen Bereich ";
+        assert sequenceNumber >0: "Sequenznummer muss größer als 0";
     }
 
     /**
