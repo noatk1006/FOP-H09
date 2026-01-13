@@ -82,7 +82,6 @@ public class TCPClient extends Client {
             throw new IllegalArgumentException("data must not be null");
         }
         //divide chunk
-        Connection conn = getConn();
         String remaining = data;
         while (!remaining.isEmpty()) {
             int chunkSize = Math.min(8, remaining.length());
@@ -97,6 +96,7 @@ public class TCPClient extends Client {
     private void sendDataChunk(String chunk) throws InternetException, PacketException{
         int currentSequence = sequence;
         int expectedACKSequence = sequence+1+chunk.length();
+
         Packet ACK = TCPUtils.try3Times(() ->{
             getConn().sendPacket(currentSequence,DATA,chunk);
             return getConn().waitForPacketTimeout(5000);
@@ -107,7 +107,7 @@ public class TCPClient extends Client {
         ACK.expectSequenceNumber(expectedACKSequence);
         ACK.validateChecksum();
 
-        sequence = expectedACKSequence;
+        sequence = expectedACKSequence+1;
     }
     /**
      * Retrieves the message from the remote server, combining multiple
@@ -138,20 +138,23 @@ public class TCPClient extends Client {
                 return getConn().waitForPacketTimeout(5000);
             },expectedACKSequence);
 
-            sequence =  currentACKSequence+2;
+            sequence=currentACKSequence+1;
 
             received.expectType(DATA);
             received.expectSequenceNumber(expectedACKSequence);
             received.validateChecksum();
 
             String chunk = received.getData();
+            this.sequence = expectedACKSequence+1+chunk.length();
             if(chunk.equals("<EOF>")){
-                sequence = expectedACKSequence+1+chunk.length();
-                return stringBuilder.toString();
+                sequence=expectedACKSequence+1+chunk.length();
+                break;
+            }else {
+                stringBuilder.append(chunk);
+                ackSequence=expectedACKSequence+1+chunk.length();
             }
-            stringBuilder.append(chunk);
-            ackSequence = expectedACKSequence+1+chunk.length();
         }
+        return stringBuilder.toString();
 
 
     }

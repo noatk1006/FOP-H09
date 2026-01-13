@@ -21,9 +21,9 @@ public class Main {
      * @param args program arguments
      */
     public static void main(String[] args) {
-         Verbose.turnVerbose();
-         InternetPool.setChannel(new LossyChannel());
-         //InternetPool.setChannel(new TimeoutChannel());
+        Verbose.turnVerbose();
+        //InternetPool.setChannel(new LossyChannel());
+        //InternetPool.setChannel(new TimeoutChannel());
         try {
             TCPServer server = new TCPServer(443);
 
@@ -34,12 +34,11 @@ public class Main {
             String req = client.receive();
             client.close();
 
-
-             //Requests Version
-           /* String req = Requests.fetch(443, "Hello Server");
+            // Requests Version
+            // String req = Requests.fetch(443, "Hello Server");
 
             server.close();
-            System.out.println(req);*/
+            System.out.println(req);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

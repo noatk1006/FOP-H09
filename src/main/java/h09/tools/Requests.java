@@ -34,7 +34,6 @@ public class Requests {
             client.connect();
             client.send(request);
             String reply = client.receive();
-            client.close();
             return reply;
         } catch (NoFreePortException e) {
             printNoFreePort();
